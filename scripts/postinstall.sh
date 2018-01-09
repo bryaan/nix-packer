@@ -67,3 +67,21 @@ rm -rf /tmp/*
 # dd if=/dev/zero of=/tmp/whitespace bs=1024 count=$count;
 # rm /tmp/whitespace;
 
+sleep 2
+reboot -f 
+
+# TODO 
+# systemctl start sshd 
+# then asks for what user to run under,
+# already tried vagrant and didnt work so maybe needs to be root?
+
+# TODO So sshd should be running automatically under the sshd user.
+# check this is the case first.
+
+# Second im pretty sure i saw the vbox attempt to connect and fail even without the manual start.
+
+# So it might just be bad keys? Or SHIT i didnt add id_rsa to 
+
+
+
+

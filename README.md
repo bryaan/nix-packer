@@ -2,16 +2,18 @@
 
 This is a [Packer](http://packer.io) definition for [NixOS](http://nixos.org). It builds a [Vagrant](http://www.vagrantup.com/) box for various NixOS versions.
 
+
 # Resources
 
 [NixOS Config Options](https://nixos.org/nixos/manual/options.html)
 
 [NixOS SSHd Config](https://github.com/NixOS/nixpkgs/blob/master/nixos/modules/services/networking/ssh/sshd.nix)
 
+[Nix Networking Config](https://github.com/NixOS/nixos/blob/master/modules/tasks/network-interfaces.nix)
+
 [Vagrant Settings](https://www.vagrantup.com/docs/vagrantfile/machine_settings.html)
 
 [NixOS ISOs](https://nixos.org/channels/)
-
 
 # Usage
 
@@ -24,6 +26,13 @@ vagrant up
 ```
 
 systemctl start display-manager
+
+
+Should be able to:
+
+nixops ssh machine
+
+https://github.com/zefhemel/nixops-mac-setup/blob/master/install-nix.sh
 
 
 

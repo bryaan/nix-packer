@@ -68,6 +68,3 @@ fi
 
 ### Install ###
 nixos-install
-
-# sleep 2
-# reboot -f
