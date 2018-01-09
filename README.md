@@ -1,12 +1,9 @@
 # About
 
 This is a [Packer](http://packer.io) definition for [NixOS](http://nixos.org). It
-builds a [Vagrant](http://www.vagrantup.com/) box for NixOS 14.12
-x86_64.
+builds a [Vagrant](http://www.vagrantup.com/) box for various NixOS versions.
 
 # Usage
-
-(to be updated by cstrahan)
 
 Pre-built boxes are [hosted on
 VagrantCloud](https://vagrantcloud.com/cstrahan). To use a pre-built
