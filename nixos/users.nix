@@ -1,29 +1,44 @@
 { config, pkgs, ... }:
 
 {
+
   # Creates a "vagrant" user with password-less sudo access.
   users = {
     # Disable mutable users so we don't get prompted for password at install time
     mutableUsers = false;
 
-    extraGroups = [ { name = "vagrant"; } { name = "vboxsf"; } ];
+    extraGroups = [ 
+      { name = "vagrant"; } 
+      { name = "vboxsf"; } 
+    ];
     extraUsers  = [
       {
-        name            = "vagrant";
         description     = "Vagrant User";
+        name            = "vagrant";  
         group           = "vagrant";
         extraGroups     = [ "users" "vboxsf" "wheel" ];
         password        = "vagrant";
         home            = "/home/vagrant";
         createHome      = true;
+        # isSystemUser    = false; # What is this?
         useDefaultShell = true;
-        openssh.authorizedKeys.keys = [
-          "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEA6NF8iallvQVp22WDkTkyrtvp9eWW6A8YVr+kz4TjGYe7gHzIw+niNltGEFHzD8+v1I2YJ6oXevct1YeS0o9HZyN1Q9qgCgzUFtdOKLv6IedplqoPkcmF0aYet2PkEDo3MlTBckFXPITAMzF8dJSIFo9D8HfdOV0IAdx4O7PtixWKn5y2hMNG0zQPyUecp4pzC6kivAIhyfHilFR61RGL+GPXQ2MWZWFYbAGjyiYJnAmCP3NOTd0jMZEnDkbUvxhMmBYSdETk1rRgm+R4LOzFUGaHqHDLKLX+FIPKcF96hrucXzcWyLbIbEgE98OHlnVYCzRdK8jlqm8tehUc9c9WhQ== vagrant insecure public key"
-        ];
+        shell = pkgs.bash;
       }
     ];
   };
 
+  # TODO I think this should be specified per user.
+  # Instead of globally.
+  # https://github.com/NixOS/nixos/blob/master/modules/programs/bash/bash.nix
+  # programs.bash = {
+  #   # environment.etc."bashrc".source = "./bashrc";
+  # };
+  
+  # users.extraUsers.adisbladis = {
+  #    shell = pkgs.fish;
+  #  };
+
+  # TODO Is this sane?
   security.sudo.wheelNeedsPassword = false;
   security.sudo.configFile = ''
     Defaults:root,%wheel env_keep+=LOCALE_ARCHIVE

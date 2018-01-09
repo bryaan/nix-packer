@@ -1,14 +1,15 @@
 {
   "variables": {
+    "graphical":         "true",
     "swap_size":         "",
     "disk_size":         "40000",
-    "memmory_size":      "1024",
-    "cpus":              "1",
-    "vm_name":           "nixos-18.03-x86_64",
-    "iso_url": "~/Downloads/nixos-minimal-18.03pre124015.f59a0f7f1a6-x86_64-linux.iso",
-    "iso_checksum": "d880d70a3db98d1e832d72f362d24dee2669e01f59e25c63b74600f80b21dedf",
+    "memmory_size":      "2048",
+    "cpus":              "2",
+    "vm_name":           "nixos-17.09-x86_64",
+    "iso_url":           "./iso/nixos-graphical-17.09.2631.0653b73bf61-x86_64-linux.iso",
+    "iso_checksum":      "0cda1e3aea3f613102ab661f703ac8e81735a43abca38d5f5872686fda7f1fa1",
     "iso_checksum_type": "sha256",
-    "nixos_channel":     "https://nixos.org/channels/nixos-18.03"
+    "nixos_channel":     "https://nixos.org/channels/nixos-17.09"
   },
   "builders": [
     {
@@ -25,16 +26,17 @@
         "export NIXOS_CHANNEL=\"{{ user `nixos_channel` }}\"<enter>",
         "curl http://{{ .HTTPIP }}:{{ .HTTPPort }}/boot.sh -s | bash<enter><wait>"
       ],
+      "communicator": "ssh",
+      "ssh_username": "vagrant",
+      "ssh_port": 22,
+      "ssh_wait_timeout": "25m",
       "http_directory": "nixos",
       "iso_url": "{{ user `iso_url` }}",
       "iso_checksum_type": "{{ user `iso_checksum_type` }}",
       "iso_checksum": "{{ user `iso_checksum` }}",
       "shutdown_command": "sudo shutdown -h now",
-      "ssh_username": "vagrant",
-      "ssh_key_path": "keys/vagrant.key",
-      "ssh_wait_timeout": "25m",
       "virtualbox_version_file": ".vbox_version",
-      "guest_additions_mode": "disable",
+      "guest_additions_mode": "attach",
       "vboxmanage": [
         ["modifyvm", "{{.Name}}", "--memory", "{{ user `memmory_size` }}"],
         ["modifyvm", "{{.Name}}", "--cpus", "{{ user `cpus` }}"]
@@ -51,7 +53,7 @@
   "post-processors": [
     {
       "type": "vagrant",
-      "output": "nixos-18.03-x86_64-{{.Provider}}.box"
+      "output": "nixos-17.09-x86_64-{{.Provider}}.box"
     }
   ]
 }

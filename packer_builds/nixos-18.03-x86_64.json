@@ -2,19 +2,19 @@
   "variables": {
     "swap_size":         "",
     "disk_size":         "40000",
-    "memmory_size":      "1024",
-    "cpus":              "1",
-    "vm_name":           "nixos-14.10-i686",
-    "iso_url":           "http://releases.nixos.org/nixos/unstable/nixos-14.10pre49475.74f6be0/nixos-minimal-14.10pre49475.74f6be0-i686-linux.iso",
+    "memmory_size":      "2048",
+    "cpus":              "2",
+    "vm_name":           "nixos-18.03-x86_64",
+    "iso_url":           "./iso/nixos-minimal-18.03pre124015.f59a0f7f1a6-x86_64-linux.iso",
+    "iso_checksum":      "d880d70a3db98d1e832d72f362d24dee2669e01f59e25c63b74600f80b21dedf",
     "iso_checksum_type": "sha256",
-    "iso_checksum":      "3be04e0fb814bab05a0bc86e507ebdc106497f13103756b19af6a279a25bca34",
-    "nixos_channel":     "https://nixos.org/channels/nixos-unstable"
+    "nixos_channel":     "https://nixos.org/channels/nixos-18.03"
   },
   "builders": [
     {
       "type": "virtualbox-iso",
       "vm_name": "{{ user `vm_name` }}",
-      "guest_os_type": "Linux",
+      "guest_os_type": "Linux_64",
       "disk_size": "{{ user `disk_size` }}",
       "boot_wait": "0.7m",
       "boot_command": [
@@ -23,17 +23,13 @@
         "export HTTP_PORT={{ .HTTPPort }}<enter>",
         "export SWAP=\"{{ user `swap_size` }}\"<enter>",
         "export NIXOS_CHANNEL=\"{{ user `nixos_channel` }}\"<enter>",
-        "curl http://{{ .HTTPIP }}:{{ .HTTPPort }}/boot.sh -s > boot.sh<enter><wait>",
-        "sh boot.sh<enter><wait>"
+        "curl http://{{ .HTTPIP }}:{{ .HTTPPort }}/boot.sh -s | bash<enter><wait>"
       ],
       "http_directory": "nixos",
       "iso_url": "{{ user `iso_url` }}",
       "iso_checksum_type": "{{ user `iso_checksum_type` }}",
       "iso_checksum": "{{ user `iso_checksum` }}",
       "shutdown_command": "sudo shutdown -h now",
-      "ssh_username": "vagrant",
-      "ssh_key_path": "keys/vagrant.key",
-      "ssh_wait_timeout": "25m",
       "virtualbox_version_file": ".vbox_version",
       "guest_additions_mode": "disable",
       "vboxmanage": [
@@ -52,8 +48,7 @@
   "post-processors": [
     {
       "type": "vagrant",
-      "output": "nixos-14.10-i686-{{.Provider}}.box"
+      "output": "nixos-18.03-x86_64-{{.Provider}}.box"
     }
   ]
 }
-

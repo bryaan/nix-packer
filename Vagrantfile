@@ -5,13 +5,37 @@
 VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-  config.vm.box         = "cstrahan/nixos-14.04-x86_64"
-  config.vm.box_version = "~> 0.1.0"
 
-  config.ssh.forward_agent = true
+  # Use a suitable NixOS base
+  config.vm.box = "nixos-17.09-x86_64"
+  config.vm.box_url = "file:///Users/bryan/src/nixos/test.box"
+  # config.vm.box         = "cstrahan/nixos-14.04-x86_64"
+  # config.vm.box_version = "~> 0.1.0"
+
+  # Setup networking
+  config.vm.hostname = "nixy"
+  config.vm.network "private_network", :ip => "172.16.16.16"
+
+  # What does this do?
+  # config.ssh.forward_agent = true
+
+  # Don't need this since using packer?
+  # TODO needs to be right directory for nixos.  prob just config sshd with nix config.
+  # config.vm.provision "file", source: "keys/public", destination: "~/.ssh/authorized_keys"
+
+  # Add NixOS config
+  # config.vm.provision :nixos, :path => “configuration.nix”
+ #  config.vm.provision :nixos, :expression => {
+ #    environment: {
+	#   systemPackages: [ :htop ]
+	# }
+ #  }
+
+  # TODO Setup SWAP, visit git home for config
 
   config.vm.provider "virtualbox" do |v|
-    v.memory = 4000
-    v.gui = false
+	v.memory = 4000
+	v.gui = false
   end
+
 end
