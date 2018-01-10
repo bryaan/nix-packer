@@ -32,12 +32,22 @@ Nvm according to that it is for the instance.
 
 [NixOS ISOs](https://nixos.org/channels/)
 
+# Setup
+
+### Create SSH Keys
+
+ssh-keygen -t rsa -b 4096
+id_vagrant
+no password
+
+If you want to specify another file change `ssh_private_key_file` in `packer-template.json`, and also the key in `Vagrantfile`.
+
 # Usage
 
+Change NixOS version in Vargrantfile.
+
 ```
-
 packer build packer_builds/nixos-17.09-x86_64.json
-
 
 vagrant up
 ```

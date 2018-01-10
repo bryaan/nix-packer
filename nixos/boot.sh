@@ -58,17 +58,15 @@ curl http://$HTTP_IP:$HTTP_PORT/users.nix > /mnt/etc/nixos/users.nix
 curl http://$HTTP_IP:$HTTP_PORT/vagrant-hostname.nix > /mnt/etc/nixos/vagrant-hostname.nix
 curl http://$HTTP_IP:$HTTP_PORT/vagrant-network.nix > /mnt/etc/nixos/vagrant-network.nix
 curl http://$HTTP_IP:$HTTP_PORT/vagrant.nix > /mnt/etc/nixos/vagrant.nix
-
-# mkdir -p /mnt/etc/nixos/misc
 curl --create-dirs http://$HTTP_IP:$HTTP_PORT/misc/ssh-keys.nix > /mnt/etc/nixos/misc/ssh-keys.nix
 
 # # TODO This should be done in a more elegant manner.  Why not look
 # # at Graphical envvar in .nix files?
 # # TODO Check that this is being set by packer config.
-# if [ -z "$GRAPHICAL" ]; then
+if [ -z "$GRAPHICAL" ]; then
   # Makes it a text env.
   sed -i 's/graphical\.nix/text.nix/' /mnt/etc/nixos/configuration.nix
-# fi
+fi
 
 ### Install ###
 nixos-install 
