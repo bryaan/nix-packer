@@ -38,14 +38,13 @@
       "communicator": "ssh",
       "ssh_agent_auth": "true",
       "ssh_username": "vagrant",
-      "ssh_password": "vagrant",
       "ssh_port": 22,
       "ssh_wait_timeout": "25m",
-      "ssh_private_key_file": "/Users/bryan/.ssh/id_vagrant",
 
       "vboxmanage": [
         ["modifyvm", "{{.Name}}", "--memory", "{{ user `memmory_size` }}"],
-        ["modifyvm", "{{.Name}}", "--cpus", "{{ user `cpus` }}"]
+        ["modifyvm", "{{.Name}}", "--cpus", "{{ user `cpus` }}"],
+        ["modifyvm", "{{.Name}}", "--natnet1", "10.11.12/24"]
       ]
     }
   ],

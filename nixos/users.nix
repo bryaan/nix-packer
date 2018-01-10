@@ -23,6 +23,9 @@
         # isSystemUser    = false; # What is this?
         useDefaultShell = true;
         shell = pkgs.bash;
+        openssh.authorizedKeys.keys = [
+          "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCapukQPQaIMayUN4ngIjesHf/oOpynpWEacp5Ovq3qXdhSg9OL60HuH6js5TfVVGKW5fQjkzah0TAFmeHCxOnfnKpRJjT64H9n58WE75nxS5OhE7MQYvnp3NMjmSS/PN+6kIDw5dQx0CcjyiNWpNaebtH+FkyG4VKvBTREuPjwzEFu5rlX9g050UsO2n3SRyDtTM1bG7UORihVuUEr5XgTOrGiFquVeiJVs3Fo7EKSha/KapI0hklfh7kqgcWPPxOiD+Sxd/SymTcMigwSMeWarguxaQP9IAWV1HSua1PhpFx7A9JhEFNwpaFDK9ajzhQ4HEQ2Z1rLLvo0l6YcsGBPntZr3fBx8ZNtMOXcyoE2bpqfSFY+H5PO+bXODH7e2/8Kyxa+1L66yDP3F928X5RCWFZ84A1ABVwz2aKFOA4CyaQL/B6cIqkHb3x9rAxickehSkcFiDOFotQbAB0I8Cyh5f8D69gzDGDZ7DALs3bguhtxnrr2a56OEbxU/+9LkO1uoHd+tSPdDOOsfdWz1yuoTKgULxKKW6RoLlzBV+iwMDaeK6RU5pAGNzVl/7WOQsE0rmOSS9KYlO3q/YO3wnvZZGIxlsAk0nows17kB2HqZigJ+RIKN/AR+RrCNcc8fkGQRqRzuTdOgYZOrXdCzkSCtjdhEtCjw8zcMBBS4MO+fQ== bryan@Bryans-Air"
+        ];
       }
     ];
   };

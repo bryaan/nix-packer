@@ -40,15 +40,18 @@
   services.openssh = {
 	enable = true;
     permitRootLogin = "no";
-    ports = [22];
-    authorizedKeysFiles = [ "~/.ssh/id_rsa.pub" ];
-	passwordAuthentication = false;
+    ports = [ 22 ];
+    authorizedKeysFiles = [ "/Users/bryan/.ssh/id_vagrant.pub" ];
+	passwordAuthentication = true;
 	# TODO Seem to need this for packer build to work.
 	# Should be off in production, or on bare metal.
 	challengeResponseAuthentication = true;
 	hostKeys = [
 	  { type = "rsa"; bits = 4096; path = "/etc/ssh/ssh_host_rsa_key"; }
 	];
+	extraConfig = "
+		AllowUsers vagrant
+	";
   };
 
   # Enable DBus

@@ -16,8 +16,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.hostname = "nixy"
   config.vm.network "private_network", :ip => "172.16.16.16"
 
-  # What does this do?
-  # config.ssh.forward_agent = true
+  # Use host keys to SSH to VM
+  config.ssh.forward_agent = true
 
   # Don't need this since using packer?
   # TODO needs to be right directory for nixos.  prob just config sshd with nix config.

@@ -59,12 +59,14 @@ curl http://$HTTP_IP:$HTTP_PORT/vagrant-hostname.nix > /mnt/etc/nixos/vagrant-ho
 curl http://$HTTP_IP:$HTTP_PORT/vagrant-network.nix > /mnt/etc/nixos/vagrant-network.nix
 curl http://$HTTP_IP:$HTTP_PORT/vagrant.nix > /mnt/etc/nixos/vagrant.nix
 
-# TODO This should be done in a more elegant manner.  Why not look
-# at Graphical envvar in .nix files?
-# TODO Check that this is being set by packer config.
-if [ -z "$GRAPHICAL" ]; then
+# # TODO This should be done in a more elegant manner.  Why not look
+# # at Graphical envvar in .nix files?
+# # TODO Check that this is being set by packer config.
+# if [ -z "$GRAPHICAL" ]; then
   sed -i 's/graphical\.nix/text.nix/' /mnt/etc/nixos/configuration.nix
-fi
+# fi
 
 ### Install ###
-nixos-install
+nixos-install 
+
+# && reboot -f

@@ -2,6 +2,23 @@
 
 This is a [Packer](http://packer.io) definition for [NixOS](http://nixos.org). It builds a [Vagrant](http://www.vagrantup.com/) box for various NixOS versions.
 
+You will need to add:
+  /usr/local/bin/fish
+to /etc/shells.
+
+Then run:
+  chsh -s /usr/local/bin/fish
+to make fish your default shell.
+
+
+# TODO Could be bc ssh_private_key in packer-template is actually the key 
+to use to connect to the machine. ie the key specified in its authd_keys
+https://github.com/hashicorp/packer/blob/master/builder/googlecompute/step_create_ssh_key.go
+Nvm according to that it is for the instance.
+
+
+# So run sshd in verbose or enable logging or both
+
 
 # Resources
 

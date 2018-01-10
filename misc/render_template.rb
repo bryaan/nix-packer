@@ -16,7 +16,7 @@ ISOS.each do |name, attrs|
   template.gsub!("@GUEST_OS_TYPE@", attrs["guest_os_type"])
   template.gsub!("@NIXOS_CHANNEL@", attrs["channel"])
 
-  File.open("#{name}.json", "w") do |f|
+  File.open("packer_builds/#{name}.json", "w") do |f|
     f.write(template)
   end
 end

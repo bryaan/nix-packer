@@ -22,7 +22,7 @@ in {
 
   # Try to improve nix pkg download time.
   nix.extraOptions = ''
-   binary-caches-parallel-connections = 3
+   binary-caches-parallel-connections = 5
    connect-timeout = 5
   '';
 
