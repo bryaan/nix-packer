@@ -3,5 +3,4 @@
 packer_cache/
 output-virtualbox-iso/
 .vagrant/
-keys/
 iso/

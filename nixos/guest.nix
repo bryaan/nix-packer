@@ -41,17 +41,20 @@
 	enable = true;
     permitRootLogin = "no";
     ports = [ 22 ];
-    authorizedKeysFiles = [ "/Users/bryan/.ssh/id_vagrant.pub" ];
-	passwordAuthentication = true;
+	passwordAuthentication = false;
 	# TODO Seem to need this for packer build to work.
 	# Should be off in production, or on bare metal.
 	challengeResponseAuthentication = true;
 	hostKeys = [
 	  { type = "rsa"; bits = 4096; path = "/etc/ssh/ssh_host_rsa_key"; }
 	];
-	extraConfig = "
-		AllowUsers vagrant
-	";
+
+	# I dont know what user it would be if specified here.
+    # authorizedKeysFiles = [ "/etc/ssh/id_bryan_macair_vagrant.pub" ];
+
+	# extraConfig = ''
+	#   AllowUsers vagrant
+	# '';
   };
 
   # Enable DBus

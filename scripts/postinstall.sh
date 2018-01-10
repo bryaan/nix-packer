@@ -3,9 +3,6 @@
 # This file is called by a `provisioner` in packer-template.json
 # when nixos-install has completed successfully.
 
-# set -e
-# set -x
-
 # Upgrade.
 nixos-rebuild switch --upgrade
 
@@ -66,7 +63,3 @@ rm -rf /tmp/*
 # let count--
 # dd if=/dev/zero of=/tmp/whitespace bs=1024 count=$count;
 # rm /tmp/whitespace;
-
-# # TODO Not working prob bc not privied?
-# sleep 2
-# reboot -f
