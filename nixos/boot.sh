@@ -15,12 +15,14 @@ SWAP=45000
 # TODO Take abs value
 PRIMARY_SIZE=$(($DISK_SIZE - $SWAP))
 
-# echo "GRAPHICAL: $GRAPHICAL"
-# echo "DISK_SIZE: $DISK_SIZE"
-# echo "PRIMARY_SIZE: $PRIMARY_SIZE"
-# echo "SWAP: $SWAP"
+echo "GRAPHICAL: $GRAPHICAL"
+echo "DISK_SIZE: $DISK_SIZE"
+echo "PRIMARY_SIZE: $PRIMARY_SIZE"
+echo "SWAP: $SWAP"
+echo ''
 
-# sleep 10
+sleep 10
+echo ''
 
 # Create partitions
 # if [ -z "$SWAP" ]; then
@@ -47,27 +49,30 @@ PRIMARY_SIZE=$(($DISK_SIZE - $SWAP))
 # EOF
 
 # else
-	# The sed script strips off all the comments so that we can
-	# document what we're doing in-line with the actual commands
-	# Note that a blank line (commented as "defualt" will send a empty
-	# line terminated with a newline to take the fdisk default.
-	sed -e 's/\s*\([\+0-9a-zA-Z]*\).*/\1/' << EOF | fdisk /dev/sda
-	  o # clear the in memory partition table
-	  n # new partition
-	  p # primary partition
-	  1 # partition number 1
-	    # default - start at beginning of disk
-	  +${PRIMARY_SIZE}M # PRIMARY_SIZE MB boot parttion
-	  n # new partition
-	  p # primary partition
-	  2 # partion number 2
-	    # default, start immediately after preceding partition
-	    # default, extend partition to end of disk
-	  a # make a partition bootable
-	  p # print the in-memory partition table
-	  w # write the partition table
-	  q # and we're done # might not need this in nixos
-	EOF
+
+# Looks like it needs to not be tabbed in more than 2 spaces. TODO Try just the EOF
+# The sed script strips off all the comments so that we can
+# document what we're doing in-line with the actual commands
+# Note that a blank line (commented as "defualt" will send a empty
+# line terminated with a newline to take the fdisk default.
+sed -e 's/\s*\([\+0-9a-zA-Z]*\).*/\1/' << EOF | fdisk /dev/sda
+  o # clear the in memory partition table
+  n # new partition
+  p # primary partition
+  1 # partition number 1
+    # default - start at beginning of disk
+  +${PRIMARY_SIZE}M # PRIMARY_SIZE MB boot parttion
+  n # new partition
+  p # primary partition
+  2 # partion number 2
+    # default, start immediately after preceding partition
+    # default, extend partition to end of disk
+  a # make a partition bootable
+  1 # partition number 1
+  p # print the in-memory partition table
+  w # write the partition table
+  q # and we're done # might not need this in nixos
+EOF
 
   sleep 30
 
