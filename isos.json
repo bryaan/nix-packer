@@ -6,13 +6,13 @@
     "sha256": "f4711871073f4a79d31e1d5f529b988dd16d11a1b912bd1fb892e217662dd72c"
   },
   "nixos-17.09-x86_64": {
-    "url": "./iso/nixos-graphical-17.09.2631.0653b73bf61-x86_64-linux.iso",
+    "url": "./nixos-iso/nixos-graphical-17.09.2631.0653b73bf61-x86_64-linux.iso",
     "channel": "https://nixos.org/channels/nixos-17.09",
     "guest_os_type": "Linux_64",
     "sha256": "0cda1e3aea3f613102ab661f703ac8e81735a43abca38d5f5872686fda7f1fa1"
   },
   "nixos-18.03-x86_64": {
-    "url": "./iso/nixos-minimal-18.03pre124015.f59a0f7f1a6-x86_64-linux.iso",
+    "url": "./nixos-iso/nixos-minimal-18.03pre124015.f59a0f7f1a6-x86_64-linux.iso",
     "channel": "https://nixos.org/channels/nixos-18.03",
     "guest_os_type": "Linux_64",
     "sha256": "d880d70a3db98d1e832d72f362d24dee2669e01f59e25c63b74600f80b21dedf"

@@ -5,8 +5,9 @@ let
   inherit (builtins) hasAttr;
 in {
 
-  # ** If adding a file here make sure it gets copied in 
-  # nixos/configuration.nix  TODO See if we can inject that from here.
+  # ** If importing a file here make sure it gets copied in 
+  # nixos/configuration.nix  
+  # TODO See if we can inject that from here.
   imports = [ 
     # Include the results of the hardware scan.
     ./hardware-configuration.nix 
@@ -26,21 +27,18 @@ in {
    connect-timeout = 5
   '';
 
-  # # Packages for Vagrant
-  # It is auto-append as evidenced by graphical .nix TODO remove me
-  # environment.systemPackages = with pkgs; [
-  #   findutils
-  #   gnumake
-  #   iputils
-  #   jq
-  #   nettools
-  #   netcat
-  #   nfs-utils
-  #   rsync
-  # ];
-
-
-  environment.systemPackages =
-    [ ]
-    ++ lib.optionals (hasAttr "biosdevname" pkgs) [pkgs.biosdevname]; # Vagrant plugin support.
+  # Packages for Vagrant
+  # TODO Move the Vagrant group of packges into their own key.
+  # Import key here, should be able to have duplcates specified w/o issue.
+  environment.systemPackages = with pkgs; [
+    findutils
+    gnumake
+    iputils
+    jq
+    nettools
+    netcat
+    nfs-utils
+    rsync
+  ]
+  ++ lib.optionals (hasAttr "biosdevname" pkgs) [pkgs.biosdevname]; # Vagrant plugin support.
 }

@@ -1,8 +1,8 @@
 {
   "variables": {
     "graphical":         "true",
-    "swap_size":         "",
-    "disk_size":         "40000",
+    "swap_size":         "4000",
+    "disk_size":         "4000",
     "memmory_size":      "2048",
     "cpus":              "2",
     "vm_name":           "@VM_NAME@",

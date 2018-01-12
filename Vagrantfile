@@ -18,19 +18,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.ssh.forward_agent = true
   config.ssh.private_key_path = "~/.ssh/id_vagrant"
 
-  # Add NixOS config
-  # config.vm.provision :nixos, :path => “configuration.nix”
-  #   config.vm.provision :nixos, :expression => {
-  #     environment: {
-  # 	  systemPackages: [ :htop ]
-  # 	}
-  # }
-
-  # TODO Setup SWAP in packer, visit git home for config
-
   config.vm.provider "virtualbox" do |v|
-	v.memory = 4000
-	v.gui = false
+  	v.memory = 4000
+  	v.gui = false
   end
 
 end

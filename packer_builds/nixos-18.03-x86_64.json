@@ -1,12 +1,12 @@
 {
   "variables": {
     "graphical":         "true",
-    "swap_size":         "",
-    "disk_size":         "40000",
+    "swap_size":         "45000",
+    "disk_size":         "50000",
     "memmory_size":      "2048",
     "cpus":              "2",
     "vm_name":           "nixos-18.03-x86_64",
-    "iso_url":           "./iso/nixos-minimal-18.03pre124015.f59a0f7f1a6-x86_64-linux.iso",
+    "iso_url":           "./nixos-iso/nixos-minimal-18.03pre124015.f59a0f7f1a6-x86_64-linux.iso",
     "iso_checksum_type": "sha256",
     "iso_checksum":      "d880d70a3db98d1e832d72f362d24dee2669e01f59e25c63b74600f80b21dedf",
     "nixos_channel":     "https://nixos.org/channels/nixos-18.03"
@@ -21,9 +21,10 @@
       "boot_wait": "0.7m",
       "boot_command": [
         "root<enter>",
+        "root<enter>",
         "export HTTP_IP={{ .HTTPIP }}<enter>",
         "export HTTP_PORT={{ .HTTPPort }}<enter>",
-        "export SWAP=\"{{ user `swap_size` }}\"<enter>",
+        "export SWAP={{ user `swap_size` }}<enter>",
         "export NIXOS_CHANNEL=\"{{ user `nixos_channel` }}\"<enter>",
         "curl http://{{ .HTTPIP }}:{{ .HTTPPort }}/boot.sh -s > boot.sh<enter><wait>",
         "sh boot.sh<enter><wait>"
@@ -39,7 +40,7 @@
       "ssh_agent_auth": "true",
       "ssh_username": "vagrant",
       "ssh_port": 22,
-      "ssh_wait_timeout": "25m",
+      "ssh_wait_timeout": "120m",
       "ssh_private_key_file": "/Users/bryan/.ssh/id_vagrant",
 
       "vboxmanage": [
