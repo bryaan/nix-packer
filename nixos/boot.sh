@@ -4,25 +4,30 @@
 
 # Get all avaialable disk space.
 B_TO_MB="1024"  #"1048576"
-# DISK_SIZE=$(fdisk -l | grep ^Disk | grep -v loop | awk -F" "  '{ print $5 }' | head -n 1)
+DISK_SIZE=$(fdisk -l | grep ^Disk | grep -v loop | awk -F" "  '{ print $5 }' | head -n 1)
 # DISK_SIZE=$(($DISK_SIZE / $B_TO_MB))
 # TODO Getting 4048 for size set to 50000???
 
 DISK_SIZE=50000
 SWAP=45000
 
+# So fdisk isnt coming out to eactly 4.5G
+
+
 # Calc Prmary Partition Size
-# TODO Take abs value
 PRIMARY_SIZE=$(($DISK_SIZE - $SWAP))
 
-echo "GRAPHICAL: $GRAPHICAL"
-echo "DISK_SIZE: $DISK_SIZE"
-echo "PRIMARY_SIZE: $PRIMARY_SIZE"
-echo "SWAP: $SWAP"
-echo ''
+# TODO could be the ssh daemon iss sometimes coming too quick so it start typing
+# bootwit flag in  packer config?
+# This screws up the typing sewunce for some reason?  But that comes before?
+# echo "GRAPHICAL: $GRAPHICAL"
+# echo "DISK_SIZE: $DISK_SIZE"
+# echo "PRIMARY_SIZE: $PRIMARY_SIZE"
+# echo "SWAP: $SWAP"
+# echo ''
 
-sleep 10
-echo ''
+# sleep 10
+# echo ''
 
 # Create partitions
 # if [ -z "$SWAP" ]; then
@@ -71,10 +76,10 @@ sed -e 's/\s*\([\+0-9a-zA-Z]*\).*/\1/' << EOF | fdisk /dev/sda
   1 # partition number 1
   p # print the in-memory partition table
   w # write the partition table
-  q # and we're done # might not need this in nixos
+  # q # and we're done # might not need this in nixos
 EOF
 
-  sleep 30
+  sleep 15
 
   mkswap -L swap /dev/sda2
   swapon /dev/sda2
