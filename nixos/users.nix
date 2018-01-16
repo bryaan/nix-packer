@@ -7,20 +7,21 @@
     # Disable mutable users so we don't get prompted for password at install time
     mutableUsers = false;
 
-    extraGroups = [ 
-      { name = "vagrant"; } 
-      { name = "vboxsf"; } 
+    extraGroups = [
+      { name = "vagrant"; }
+      { name = "vboxsf"; }
     ];
     extraUsers  = [
       {
         description     = "Vagrant User";
-        name            = "vagrant";  
+        name            = "vagrant";
         group           = "vagrant";
         extraGroups     = [ "users" "vboxsf" "wheel" ];
         password        = "vagrant";
         home            = "/home/vagrant";
         createHome      = true;
         # isSystemUser    = false; # What is this?
+        # isNormalUser
         useDefaultShell = true;
         shell = pkgs.bash;
         openssh.authorizedKeys.keys = with import misc/ssh-keys.nix; [

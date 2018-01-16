@@ -15,6 +15,10 @@
 	displayManager.gdm.enable = true;
 	libinput.enable = true; # What is this?
 
+	# Auto-login
+    # displayManager.gdm.autoLogin.enable = true;
+    # displayManager.gdm.autoLogin.user = "vagrant";
+
 	# Enable XMonad Desktop Environment. (Optional)
 	# windowManager = {
 	#   xmonad.enable = true; 

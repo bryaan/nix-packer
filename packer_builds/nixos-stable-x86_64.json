@@ -43,7 +43,7 @@
     {
       "type": "shell",
       "execute_command": "sudo -E sh '{{.Path}}'",
-      "script": "scripts/postinstall.sh"
+      "script": "install-scripts/post-install.sh"
     }
   ],
   "post-processors": [

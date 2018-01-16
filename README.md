@@ -2,24 +2,6 @@
 
 This is a [Packer](http://packer.io) definition for [NixOS](http://nixos.org). It builds a [Vagrant](http://www.vagrantup.com/) box for various NixOS versions.
 
-You will need to add:
-  /usr/local/bin/fish
-to /etc/shells.
-
-Then run:
-  chsh -s /usr/local/bin/fish
-to make fish your default shell.
-
-
-# TODO Could be bc ssh_private_key in packer-template is actually the key 
-to use to connect to the machine. ie the key specified in its authd_keys
-https://github.com/hashicorp/packer/blob/master/builder/googlecompute/step_create_ssh_key.go
-Nvm according to that it is for the instance.
-
-
-# So run sshd in verbose or enable logging or both
-
-
 # Resources
 
 [NixOS Config Options](https://nixos.org/nixos/manual/options.html)
@@ -36,70 +18,281 @@ Nvm according to that it is for the instance.
 
 ### Create SSH Keys
 
-```
+```bash
 ssh-keygen -t rsa -b 4096
-id_vagrant
+~/.ssh/id_vagrant
 no password
 ```
 
 If you want to specify another file change `ssh_private_key_file` in `packer-template.json`, and also the key in `Vagrantfile`.
 
-# Build Templates
+
+# Compile Packer Templates
 
 ```bash
-./build-stable.sh
+./misc/render_template.rb
 ```
 
 # Build Image
 
 ```bash
 PACKER_LOG=1 packer build packer_builds/nixos-18.03-x86_64.json
+
+Build Stable:
+$ sh ./build-stable.sh    \
+    -var 'cpus=2'         \
+    -var 'swap_size=2000'
 ```
+
+After system reboots:
+$ systemctl start sshd
+Wait for post_install.sh to run
 
 # Usage
 
 Change NixOS version in Vargrantfile.
 
-```
+```bash
 $ packer build packer_builds/nixos-17.09-x86_64.json
 
 $ vagrant up / ssh / halt / destroy
 ```
 
+$ systemctl start sshd
 $ systemctl start display-manager
 
 
-TODO change disk_size to primary size?
+After any nix config changes run to rebuild:
+$ nixos-rebuild switch
+
+
+==================================================================================
+
+TODO diabled sshd
+Disable sshd in guest.nix so packer doesnt connect and we can try running reboot and script manually.
+
+After install finished:
+reboot
+
+Then login and:
+sudo sed -i 's/text\.nix/graphical.nix/' /etc/nixos/configuration.nix
+sudo nixos-rebuild switch
+sudo systemctl start display-manager
+
+Now do one final reboot or gnome will logout after login:
+reboot
+
+WORKING !!!!!!!!!!!!!!
+WORKING !!!!!!!!!!!!!!
+WORKING !!!!!!!!!!!!!!
+WORKING !!!!!!!!!!!!!!
+
+
+
+TODO enable sshd by modifying config.  reboot system. packer should finish connecting and build image.
+
+TODO copy post-isntall over to nixos
+
+
+TODO possibility of creating a func that checks error code of previous cmd and reruns if necc.  use for packer input stuff.
+
+
+
+==================================================================================
+
+Move to isos.json
+
+nixos-minimal-18.03pre125273.e30ecaa916f-x86_64-linux.iso
+497f8fb87422ef0d4ebdd2d7d38cacbaf4b932fbd4c9028666819cbe471a9572
+
+nixos-graphical-18.03pre125130.3a763b91963-x86_64-linux.iso
+d6af0443c6f16e08ed26a8d119f8e62c19801aec0e643568914f8a2dc6b8c9b4
+
+OVA Image:
+nixos-18.03pre125130.3a763b91963-x86_64-linux.ova
+12074bfd0dcfd62bc75c4e450b0e8441aad7cb85ed18d5a76175fa227934ec3a
+
+# TODO Just do a text build, then change it to graphical and:
+# Change text -> graphical
+# 
+reboot
+sign in and let machine image finsh; open in virtualbox
+sed -i 's/text\.nix/graphical.nix/' /etc/nixos/configuration.nix
+nixos-rebuild test
+$ systemctl start display-manager
+
+
+sed -i 's/text\.nix/graphical.nix/' /mnt/etc/nixos/configuration.nix
+nixos-rebuild switch \
+  --upgrade \
+  --fallback
+
+
+builds a vbox image using raw vboxmanage commands.  could adapt to packer.
+also doesnt use nixos-install
+https://github.com/NixOS/nixpkgs/blob/master/nixos/modules/virtualisation/virtualbox-image.nix
+https://www.johbo.com/2017/building-a-nixos-image-for-virtualbox.html
+
+!! Indeed nix-ops is a tool to setup nix on vms.  maybe it would help a lot here.
+
+
+TODO SMART Disk Health Daemon
+https://github.com/bjornfor/nixos-config/blob/master/cfg/smart-daemon.nix
+- Also find equivalent if otherwise for SSDs
+
+TODO nix-repl
+
+[solved] Test that if the local cache is down that build will still work.
+It does work.
+
+TODO Make work with no SWAP
+
+
+#### TODO Try newer 18 build
+
+Search for packages
+nix-env -qaP | grep python3-3
+
+List all installed packages
+nix-env -q
+
+
+nix-env -i python3-3.3.3
+But may have multiple by same name having diff features
+Then use (A)ttribute value
+nix-env -iA nixpkgs.python3
+
+Update packge and dependencies
+nix-env -uA nixpkgs.python3
+
+Update all installed
+nix-env -u
+
+Remove package
+nix-env -e python3-3.3.3
+
+Update binary channel (like repo update?)
+nix-channel --update
+
+Removed packages only remove symlinks, to delete data run
+nix-collect-garbage
+
+
+Useful to make simple configuration changes in NixOS (ex.: network related), when no network connectivity is available:
+nixos-rebuild switch --option binary-caches ""
+
+
+How can I install a proprietary or unfree package?
+https://nixos.wiki/wiki/FAQ
+
+
+With nix, only applications should be installed into profiles. Libraries are used using nix-shell.
+So we use nix-shell to create a sandbox dev env with those libs available to compiler.
+https://nixos.wiki/wiki/FAQ
+
+How to keep build-time dependencies around / be able to rebuild while being offline?
+https://nixos.wiki/wiki/FAQ
+
+
+
+TODO Why not use nix-env -i foo?
+`nix-env -i foo` is slower and tends to be less precise than `nix-env -f '<nixpkgs>' -iA foo`. This is because it will evaluate all of nixpkgs searching for packages with the name foo, and install the one determined to be the latest (which may not even be the one that you want). Meanwhile, with -A, nix-env will evaluate only the given attribute in nixpkgs. This will be significantly faster, consume significantly less memory, and more likely to get you what you want.
+
+
+# Serve Nix Store and Serve Nix Cache
+https://nixos.org/nix/manual/#sec-sharing-packages
+
+For example, to
+mirror the current 16.09-small release:
+nix copy -r --store https://cache.nixos.org/ --to file:///tmp/my-mirror \
+    $(curl -L https://nixos.org/channels/nixos-16.09-small/store-paths.xz | xz -d)
+
+# Allowing nonroot users to install packages
+https://nixos.org/nix/manual/#ssec-multi-user
+
+
+binary-caches = http://nixos.org/binary-cache
+--option binary-caches http://hydra.nixos.org
+
+--keep-going
+
+nix-store --verify --check-contents --repair
+  --option fallback true
+
+
+
+nix-build
+  --option connect-timeout N
+  --fallback -vvv -K
+
+
+
+What we can do is build with keepgoing, then rebuild system until it works, or actually buld from source? ohhh nvm, if we use build thefallback should work right.
+
+
+
+nix-env has options: --cores --max-jobs for parrallel; read man
+--dry-run -v
+
+ --option use-binary-caches false to nixos-rebuild or nix-env?
+Have you tried adding use-binary-caches to nix.extraOptions?
+--option build-use-substitutes false on the command line, is the option to disable binary caches.
+
+TODO request info using nix-env on python package, maybe lookup source, to verify that the data is at least network accessible, otherwise is could be bc its not getting package instead of running out of mem, or mem could be mac mem problem.
+
+ nix-store --realize https://cache.nixos.org/0cwxmyjyh1cr3xss6dqsrpmhcmwk89p4zkr59jpds1171z52k8p8.nar.xz
+
+
+
+
+nix search --name foo
+
+
+
+TODO It could be my machine running out of swap, look at glances.
+Im getting the Python depen fetch fail
+
+TODO look into nix-repl
+
+TODO uncoomment fix GRAPHICAL in boot.sh
+maybe env vars can be passed as packer build cmd args
+
+TODO could be the ssh daemon iss sometimes coming too quick so it start typing
+bootwit flag in  packer config?
+maybe what we do is check system uptime, if it has been more than bootwait time
+TODO ssh fail could be bc username dont match but unliely as in orignal repo its diff
 
 TODO Root account has no password set.  Double check this isnt a problem.
 Or if we should set to tough random throw away pass.
 
-TODO replace `ssh_username` in packer-template.json with variable.
+TODO replace username and `ssh_username` in packer-template.json with variable.
+
+TODO Zero the unused space In postinstall.sh
+Check this is ok to do with virtual box.  i think it is look at comments in file. its about image compression.
+
+TODO reduce time spent enetering vars packer boot
+env H={{ .HTTPIP }} P={{ .HTTPPort }} S={{ user `swap_size` }} C={{ user `nixos_channel` }}
+curl http://$H:$P/boot.sh -s > boot.sh
+sh boot.sh<enter><wait>
 
 
-TODO Setup SWAP in packer, visit git home for config
+TODO NixOS Parrallel download, also cache setup
+Oh and look into setting up a network cache on wifi router machine build
 
-
-The size we are using is just way too big, no way it could be without seriously massive compression which i just dont see happening. So something is up with disk.
-1. its not actually formatting the entire disk.  should be able to see this by doing the working version.
-2. Could be that one of the plugins isnt properly handling the setting, but i dont think they matter. 
-Just try getting into machine and examiningin disks.
-
-df -H  clearly shows no disk space issues, unless its trying to write to readonly space, or rather /nix/store which i dont think should be readonly.
-
+TODO So run sshd in verbose or enable logging or both
 !!!!!!!!!  /nix/.rw-store which is a tmpfs of 2.1G is at 100% this is prob it.
 
+
+swapon reveals only 788kb of usage.
 
 nixops ssh machine
 
 https://github.com/zefhemel/nixops-mac-setup/blob/master/install-nix.sh
 
-
 TODO On CLASS and KMachines
 https://nixos.org/nixos/manual/options.html#opt-power.ups.enable
 
-
-TODO Root account has empty password
+==================================================================================
 
 # Building
 
@@ -117,11 +310,3 @@ There are also a couple of variables that only affect the virtual-box build:
 
 * `memmory_size` - The amount of RAM in megabytes (defaults to 1024).
 * `cpus` - The number of CPUs (defaults to 1).
-
-Example:
-
-``` bash
-$ sh ./build-stable.sh    \
-    -var 'cpus=2'         \
-    -var 'swap_size=2000'
-```

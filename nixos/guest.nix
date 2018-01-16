@@ -31,14 +31,14 @@
   # Enable networking.
   # networking = {
   #   hostName = "mycomputer"; # Define your hostname.
-  #   hostId = # (use whatever was generated) 
+  #   hostId = # (use whatever was generated)
   #   # wireless.enable = true;  # not needed with virtualbox
   # };
 
   # Enable the OpenSSH daemon.
   # TODO Might want a seperate openssh user? Actually who is it running under?
   services.openssh = {
-	enable = true;
+	enable = false;
     permitRootLogin = "no";
     ports = [ 22 ];
 	passwordAuthentication = false;
@@ -48,10 +48,6 @@
 	hostKeys = [
 	  { type = "rsa"; bits = 4096; path = "/etc/ssh/ssh_host_rsa_key"; }
 	];
-
-	# I dont know what user it would be if specified here.
-    # authorizedKeysFiles = [ "/etc/ssh/id_bryan_macair_vagrant.pub" ];
-
 	# extraConfig = ''
 	#   AllowUsers vagrant
 	# '';

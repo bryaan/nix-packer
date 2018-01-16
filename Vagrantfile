@@ -9,6 +9,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # Use a suitable NixOS base
   config.vm.box = "nixos-18.03-x86_64"
   config.vm.box_url = "file://nixos-18.03-x86_64-virtualbox.box"
+  # config.vm.box_url = "file:///Users/bryan/Desktop/nixos-18.03-x86_64-virtualbox.box"
 
   # Setup networking
   config.vm.hostname = "nixy"

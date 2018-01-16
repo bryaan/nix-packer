@@ -1,24 +1,22 @@
 # set -e
-# Could it be nix can actually continue past errors somehow?
-# TODO check if there is a setting for install-nixos
+
+export HTTP_IP=$H
+export HTTP_PORT=$P
+export DISK_SIZE=$D
+[[ -v S ]] && export SWAP=$S # Optional [TODO impl option]
+export NIXOS_CHANNEL=$C
 
 # Get all avaialable disk space.
-B_TO_MB="1024"  #"1048576"
-DISK_SIZE=$(fdisk -l | grep ^Disk | grep -v loop | awk -F" "  '{ print $5 }' | head -n 1)
-# DISK_SIZE=$(($DISK_SIZE / $B_TO_MB))
-# TODO Getting 4048 for size set to 50000???
+# B_TO_MB="1024"  #"1048576"
+# DISK_SIZE=$(fdisk -l | grep ^Disk | grep -v loop | awk -F" "  '{ print $5 }' | head -n 1)
+# # DISK_SIZE=$(($DISK_SIZE / $B_TO_MB))
 
-DISK_SIZE=50000
-SWAP=45000
-
-# So fdisk isnt coming out to eactly 4.5G
-
+# DISK_SIZE=81920
+# SWAP=2000
 
 # Calc Prmary Partition Size
 PRIMARY_SIZE=$(($DISK_SIZE - $SWAP))
 
-# TODO could be the ssh daemon iss sometimes coming too quick so it start typing
-# bootwit flag in  packer config?
 # This screws up the typing sewunce for some reason?  But that comes before?
 # echo "GRAPHICAL: $GRAPHICAL"
 # echo "DISK_SIZE: $DISK_SIZE"
@@ -79,7 +77,7 @@ sed -e 's/\s*\([\+0-9a-zA-Z]*\).*/\1/' << EOF | fdisk /dev/sda
   # q # and we're done # might not need this in nixos
 EOF
 
-  sleep 15
+  # sleep 15
 
   mkswap -L swap /dev/sda2
   swapon /dev/sda2
@@ -114,16 +112,36 @@ curl http://$HTTP_IP:$HTTP_PORT/misc/ssh-keys.nix > /mnt/etc/nixos/misc/ssh-keys
 
 # # TODO This should be done in a more elegant manner.  Why not look
 # # at Graphical envvar in .nix files?
-# # TODO Check that this is being set by packer config.
+# # TODO Check that this is being set by packer config. Its not being set as env var.
 # if [ -z "$GRAPHICAL" ]; then
 #   # Makes it a text env.
-#   sed -i 's/graphical\.nix/text.nix/' /mnt/etc/nixos/configuration.nix
+  sed -i 's/graphical\.nix/text.nix/' /mnt/etc/nixos/configuration.nix
 # fi
 
 ### Install ###
-nixos-install
+# Jobs may be improving single file download speed.
+nixos-install \
+  --max-jobs 20 \
+  --cores 0  \
+  --show-trace
+  # --option fallback true \
+  # --option keep-going true \
+  # --option build-fallback true
 
 ### Reboot ###
-reboot -f
+
+# Cant start sshd without reboot, bc we are still in the
+# iso/build config, not our target config.
+
+# Seems if we reboot that postinstall.sh will never run.
+
+
+# TODO When in text mode, without either of these it does not finish without manual reboot.
+# reboot
+# systemctl start sshd
+
+# reboot -f
+# systemctl start sshd
+
 
 

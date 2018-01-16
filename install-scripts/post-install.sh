@@ -1,17 +1,23 @@
 #!/bin/sh
 
-# This file is called by a `provisioner` in packer-template.json
-# when nixos-install has completed successfully.
+echo "POST INSTALL SCRIPT RUNNING !!!!!!!!!!!!!!!!!!!"
+# TODO If this occurs after a reboot then it is not on /mnt
+# TODO Just do a text build, then change it to graphical and:
+# Change text -> graphical
+sed -i 's/text\.nix/graphical.nix/' /mnt/etc/nixos/configuration.nix
+nixos-rebuild switch \
+  --upgrade \
+  --fallback
 
-# Upgrade.
-nixos-rebuild switch --upgrade
+# Upgrade
+# nixos-rebuild switch --upgrade
 
-# Cleanup any previous generations and delete old packages.
+# Cleanup any previous generations and delete old packages
 nix-collect-garbage -d
 
-#################
-# General cleanup
-#################
+###################
+# General cleanup #
+###################
 
 # https://www.cammckenzie.com/blog/index.php/2013/12/06/cleanup-whitespace-on-partitions-before-compression/
 # # TODO Zero free space to aid VM compression
@@ -31,11 +37,11 @@ fi
 # Clear temporary folder
 rm -rf /tmp/*
 
-# Truncate the logs.
+# Truncate the logs
 # find /var/log -type f | while read f; do echo -ne '' > $f; done;
 
 
-# TODO Zero the unused space.
+# TODO Zero the unused space
 # Just a quick tip to help reduce the size of compressed partitions; 
 # particularly useful if imaging a drive for cloning etc. 
 #
