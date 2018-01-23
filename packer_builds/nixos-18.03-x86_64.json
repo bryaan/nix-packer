@@ -46,13 +46,6 @@
       ]
     }
   ],
-  "provisioners": [
-    {
-      "type": "shell",
-      "execute_command": "chmod +x {{.Path}}; sudo sh '{{.Path}}'",
-      "script": "install-scripts/post-install.sh"
-    }
-  ],
   "post-processors": [
     {
       "type": "vagrant",

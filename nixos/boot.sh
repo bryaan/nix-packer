@@ -128,7 +128,33 @@ nixos-install \
   # --option keep-going true \
   # --option build-fallback true
 
+
+# # TODO see if this works to move typing vars in packer to pulling them here:
+# DISK_SIZE=$(cat .disk_size)
+# SWAP_SIZE=$(cat .swap_size)
+
+
+### Cleanup ###
+# TODO The chroot may wall allow the scritpt to work with /etc instead of /mnt/etc
+# curl "http://$HTTP_IP:$HTTP_PORT/misc/post-install.sh" | nixos-install --chroot
+curl http://$HTTP_IP:$HTTP_PORT/misc/post-install.sh > /mnt/etc/nixos/misc/post-install.sh
+
+# chmod +x
+# sh /mnt/etc/nixos/misc/post-install.sh
+cat /mnt/etc/nixos/misc/post-install.sh | nixos-install --chroot
+
+# 8103 10.1.2.2 or 10.0.2.2
+
+# "provisioners": [
+#   {
+#     "type": "shell",
+#     "execute_command": "chmod +x {{.Path}}; sudo sh {{.Path}}",
+#     "script": "install-scripts/post-install.sh"
+#   }
+# ],
+
 ### Reboot ###
+# reboot
 
 # Cant start sshd without reboot, bc we are still in the
 # iso/build config, not our target config.
@@ -140,8 +166,6 @@ nixos-install \
 # reboot
 # systemctl start sshd
 
-# reboot -f
-# systemctl start sshd
 
 
 

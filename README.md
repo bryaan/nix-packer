@@ -44,10 +44,6 @@ $ sh ./build-stable.sh    \
     -var 'swap_size=2000'
 ```
 
-After system reboots:
-$ systemctl start sshd
-Wait for post_install.sh to run
-
 # Usage
 
 Change NixOS version in Vargrantfile.
@@ -58,104 +54,32 @@ $ packer build packer_builds/nixos-17.09-x86_64.json
 $ vagrant up / ssh / halt / destroy
 ```
 
-$ systemctl start sshd
-$ systemctl start display-manager
+
+# Building
+
+If you want to customize the box, there are a couple
+[variables](http://www.packer.io/docs/templates/user-variables.html) you can
+pass to Packer:
+
+* `swap_size` - The size of the swap partition in megabytes. If this is empty (the
+  default), no swap partition is created.
+* `disk_size` - The total size of the hard disk in megabytes (defaults
+  to 2000).
+* `graphical` - Set this to true to get a graphical desktop
+
+There are also a couple of variables that only affect the virtual-box build:
+
+* `memmory_size` - The amount of RAM in megabytes (defaults to 1024).
+* `cpus` - The number of CPUs (defaults to 1).
 
 
-After any nix config changes run to rebuild:
-$ nixos-rebuild switch
-
-
-==================================================================================
-
-TODO diabled sshd
-Disable sshd in guest.nix so packer doesnt connect and we can try running reboot and script manually.
-
-After install finished:
-reboot
-
-Then login and:
-sudo sed -i 's/text\.nix/graphical.nix/' /etc/nixos/configuration.nix
-sudo nixos-rebuild switch
-sudo systemctl start display-manager
-
-Now do one final reboot or gnome will logout after login:
-reboot
-
-WORKING !!!!!!!!!!!!!!
-WORKING !!!!!!!!!!!!!!
-WORKING !!!!!!!!!!!!!!
-WORKING !!!!!!!!!!!!!!
-
-
-
-TODO enable sshd by modifying config.  reboot system. packer should finish connecting and build image.
-
-TODO copy post-isntall over to nixos
-
-
-TODO possibility of creating a func that checks error code of previous cmd and reruns if necc.  use for packer input stuff.
-
-
-
-==================================================================================
-
-Move to isos.json
-
-nixos-minimal-18.03pre125273.e30ecaa916f-x86_64-linux.iso
-497f8fb87422ef0d4ebdd2d7d38cacbaf4b932fbd4c9028666819cbe471a9572
-
-nixos-graphical-18.03pre125130.3a763b91963-x86_64-linux.iso
-d6af0443c6f16e08ed26a8d119f8e62c19801aec0e643568914f8a2dc6b8c9b4
-
-OVA Image:
-nixos-18.03pre125130.3a763b91963-x86_64-linux.ova
-12074bfd0dcfd62bc75c4e450b0e8441aad7cb85ed18d5a76175fa227934ec3a
-
-# TODO Just do a text build, then change it to graphical and:
-# Change text -> graphical
-# 
-reboot
-sign in and let machine image finsh; open in virtualbox
-sed -i 's/text\.nix/graphical.nix/' /etc/nixos/configuration.nix
-nixos-rebuild test
-$ systemctl start display-manager
-
-
-sed -i 's/text\.nix/graphical.nix/' /mnt/etc/nixos/configuration.nix
-nixos-rebuild switch \
-  --upgrade \
-  --fallback
-
-
-builds a vbox image using raw vboxmanage commands.  could adapt to packer.
-also doesnt use nixos-install
-https://github.com/NixOS/nixpkgs/blob/master/nixos/modules/virtualisation/virtualbox-image.nix
-https://www.johbo.com/2017/building-a-nixos-image-for-virtualbox.html
-
-!! Indeed nix-ops is a tool to setup nix on vms.  maybe it would help a lot here.
-
-
-TODO SMART Disk Health Daemon
-https://github.com/bjornfor/nixos-config/blob/master/cfg/smart-daemon.nix
-- Also find equivalent if otherwise for SSDs
-
-TODO nix-repl
-
-[solved] Test that if the local cache is down that build will still work.
-It does work.
-
-TODO Make work with no SWAP
-
-
-#### TODO Try newer 18 build
+# Common Commands
 
 Search for packages
 nix-env -qaP | grep python3-3
 
 List all installed packages
 nix-env -q
-
 
 nix-env -i python3-3.3.3
 But may have multiple by same name having diff features
@@ -177,6 +101,8 @@ nix-channel --update
 Removed packages only remove symlinks, to delete data run
 nix-collect-garbage
 
+After any nix config changes run to rebuild:
+$ nixos-rebuild switch
 
 Useful to make simple configuration changes in NixOS (ex.: network related), when no network connectivity is available:
 nixos-rebuild switch --option binary-caches ""
@@ -209,6 +135,89 @@ nix copy -r --store https://cache.nixos.org/ --to file:///tmp/my-mirror \
 
 # Allowing nonroot users to install packages
 https://nixos.org/nix/manual/#ssec-multi-user
+
+
+---------------------------------------------------------------
+---------------------------------------------------------------
+
+
+TODO diabled sshd
+
+TODO Maybe the provison script is failing due to unknown .Path !!!!
+bc it didnt work in the main boot body.
+Figure out where file is at, and send.
+Actually what should be happening is on SSH, packer SCPs the file over.
+Thats is why it fills the path in then, not at boot.
+So maybe it was silently failing in past, but is running.
+
+TODO fixed everything that should be, check if vagrant up gives us destop enabled nix
+
+
+Disable sshd in guest.nix so packer doesnt connect and we can try running reboot and script manually.
+
+After install finished:
+reboot
+
+Then login and:
+sudo sed -i 's/text\.nix/graphical.nix/' /etc/nixos/configuration.nix
+sudo nixos-rebuild switch
+sudo systemctl start display-manager
+
+Now do one final reboot or gnome will logout after login:
+reboot
+
+WORKING !!!!!!!!!!!!!!
+WORKING !!!!!!!!!!!!!!
+WORKING !!!!!!!!!!!!!!
+WORKING !!!!!!!!!!!!!!
+
+culd always loginto vagrant after and tht stuff..  via script.
+
+TODO enable sshd by modifying config.  reboot system. packer should finish connecting and build image.
+
+TODO copy post-isntall over to nixos
+
+
+TODO possibility of creating a func that checks error code of previous cmd and reruns if necc.  use for packer input stuff.
+
+
+$ systemctl start sshd
+$ systemctl start display-manager
+
+---------------------------------------------------------------
+
+TODO Move to isos.json
+
+nixos-minimal-18.03pre125273.e30ecaa916f-x86_64-linux.iso
+497f8fb87422ef0d4ebdd2d7d38cacbaf4b932fbd4c9028666819cbe471a9572
+
+nixos-graphical-18.03pre125130.3a763b91963-x86_64-linux.iso
+d6af0443c6f16e08ed26a8d119f8e62c19801aec0e643568914f8a2dc6b8c9b4
+
+OVA Image:
+nixos-18.03pre125130.3a763b91963-x86_64-linux.ova
+12074bfd0dcfd62bc75c4e450b0e8441aad7cb85ed18d5a76175fa227934ec3a
+
+
+builds a vbox image using raw vboxmanage commands.  could adapt to packer.
+also doesnt use nixos-install
+https://github.com/NixOS/nixpkgs/blob/master/nixos/modules/virtualisation/virtualbox-image.nix
+https://www.johbo.com/2017/building-a-nixos-image-for-virtualbox.html
+
+!! Indeed nix-ops is a tool to setup nix on vms.  maybe it would help a lot here.
+
+
+TODO SMART Disk Health Daemon
+https://github.com/bjornfor/nixos-config/blob/master/cfg/smart-daemon.nix
+- Also find equivalent if otherwise for SSDs
+
+TODO nix-repl
+
+[solved] Test that if the local cache is down that build will still work.
+It does work.
+
+TODO Make work with no SWAP
+
 
 
 binary-caches = http://nixos.org/binary-cache
@@ -292,21 +301,46 @@ https://github.com/zefhemel/nixops-mac-setup/blob/master/install-nix.sh
 TODO On CLASS and KMachines
 https://nixos.org/nixos/manual/options.html#opt-power.ups.enable
 
-==================================================================================
 
-# Building
 
-If you want to customize the box, there are a couple
-[variables](http://www.packer.io/docs/templates/user-variables.html) you can
-pass to Packer:
 
-* `swap_size` - The size of the swap partition in megabytes. If this is empty (the
-  default), no swap partition is created.
-* `disk_size` - The total size of the hard disk in megabytes (defaults
-  to 2000).
-* `graphical` - Set this to true to get a graphical desktop
 
-There are also a couple of variables that only affect the virtual-box build:
 
-* `memmory_size` - The amount of RAM in megabytes (defaults to 1024).
-* `cpus` - The number of CPUs (defaults to 1).
+
+
+
+-------------------
+
+Evaluate approaches
+
+  "provisioners": [
+    {
+      "type": "shell",
+      "inline": [
+        "mkdir -p /home/mjhoy/.ssh",
+        "chown -R mjhoy:users /home/mjhoy/.ssh"
+      ]
+    },
+    {
+      "type": "file",
+      "source": "/Users/mjhoy/.ssh/id_rsa_mjhoy_4096",
+      "destination": "/home/mjhoy/.ssh/id_rsa_mjhoy_4096"
+    },
+    {
+      "type": "file",
+      "source": "/Users/mjhoy/.ssh/id_rsa_mjhoy_4096.pub",
+      "destination": "/home/mjhoy/.ssh/id_rsa_mjhoy_4096.pub"
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "chmod 600 /home/mjhoy/.ssh/id_rsa_mjhoy_4096",
+        "chown mjhoy:users /home/mjhoy/.ssh/id_rsa_mjhoy_4096",
+        "chown mjhoy:users /home/mjhoy/.ssh/id_rsa_mjhoy_4096.pub"
+      ]
+    },
+    {
+      "type": "shell",
+      "script": "postinstall.sh"
+    }
+  ]

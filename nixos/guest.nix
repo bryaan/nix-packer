@@ -38,7 +38,7 @@
   # Enable the OpenSSH daemon.
   # TODO Might want a seperate openssh user? Actually who is it running under?
   services.openssh = {
-	enable = false;
+	enable = true;
     permitRootLogin = "no";
     ports = [ 22 ];
 	passwordAuthentication = false;
